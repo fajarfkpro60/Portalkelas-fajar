@@ -6,6 +6,11 @@ self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(k => Pro
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method !== 'GET' || /script\.google(usercontent)?\.com$/.test(u.hostname)) return;
+  // config.js bisa berubah tanpa rilis baru: selalu ambil yang terbaru, cache hanya cadangan saat offline.
+  if (u.origin === location.origin && u.pathname.endsWith('/config.js')) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }).then(r => { if (r.ok) { const k = r.clone(); caches.open(CACHE).then(c => c.put(e.request, k)); } return r; }).catch(() => caches.match(e.request, { ignoreSearch: true })));
+    return;
+  }
   if (e.request.mode === 'navigate') { e.respondWith(fetch(e.request).catch(() => caches.match('./index.html'))); return; }
   if (u.origin === location.origin || /fonts\.(googleapis|gstatic)\.com$/.test(u.hostname) || u.hostname === 'cdn.jsdelivr.net') {
     e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(r => { if (r.ok || r.type === 'opaque') { const k = r.clone(); caches.open(CACHE).then(c => c.put(e.request, k)); } return r; })));
