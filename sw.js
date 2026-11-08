@@ -1,6 +1,6 @@
 // Shell aplikasi disimpan di perangkat. Permintaan ke Apps Script tidak pernah di-cache.
-const CACHE = 'pkf-320335cc34';
-const SHELL = ['./', './index.html', './style.css?v=320335cc34', './app.js?v=320335cc34', './config.js?v=320335cc34', './manifest.json', './icons/icon-192.png'];
+const CACHE = 'pkf-984a1fb5f2';
+const SHELL = ['./', './index.html', './style.css?v=984a1fb5f2', './app.js?v=984a1fb5f2', './config.js?v=984a1fb5f2', './manifest.json', './icons/icon-192.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x.startsWith('pkf-') && x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
